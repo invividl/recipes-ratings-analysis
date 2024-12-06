@@ -1,1 +1,4 @@
-# recipes-ratings-analysis
+# Recipes and Ratings Analysis
+
+### In Lorthongpanich, Christopher Shang
+
