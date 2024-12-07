@@ -11,12 +11,6 @@
 | bbq spray recipe    it really works     |         5 |         5 |               3 |        5 |         4.75 |       47.2 |                 0 |             2 |              0 |               0 |                     0 |                     0 | breakfast |
 
 ## Distribution of Ratings
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
-    body {
-        font-family: 'Open Sans', sans-serif;
-    }
-</style>
 
 <iframe
   src="assets/indiv-rating-bar.html"
