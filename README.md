@@ -18,3 +18,10 @@
   height="600"
   frameborder="0"
 ></iframe>
+
+<iframe
+  src="assets/avg-rating-bar.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
