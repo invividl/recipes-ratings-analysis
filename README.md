@@ -9,3 +9,12 @@
 | 5 tacos                                 |        20 |         5 |               9 |        4 |         4    |      249.4 |                26 |             4 |              6 |              39 |                    39 |                     0 | dinner    |
 | blepandekager   danish   apple pancakes |        50 |        10 |              10 |        5 |         5    |      358.2 |                30 |            62 |             14 |              19 |                    54 |                    12 | breakfast |
 | bbq spray recipe    it really works     |         5 |         5 |               3 |        5 |         4.75 |       47.2 |                 0 |             2 |              0 |               0 |                     0 |                     0 | breakfast |
+
+## Distribution of Ratings
+
+<iframe
+  src="assets/indiv-rating-bar.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
