@@ -158,8 +158,8 @@ The baseline model uses a Logistic Regression classifier wrapped in `OneVsRestCl
          5.0       0.77      0.21      0.33     14500
 
     accuracy                           0.22     18698
-   macro avg       0.19      0.20      0.11     18698
-weighted avg       0.63      0.22      0.29     18698
+    macro avg      0.19      0.20      0.11     18698
+    weighted avg   0.63      0.22      0.29     18698
 
 <iframe
   src="assets/base-confusion_matrix.html"
