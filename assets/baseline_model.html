@@ -1,0 +1,7 @@
+Pipeline(steps=[('columntransformer',
+                 ColumnTransformer(transformers=[('onehotencoder',
+                                                  OneHotEncoder(drop='first'),
+                                                  ['meal'])])),
+                ('onevsrestclassifier',
+                 OneVsRestClassifier(estimator=LogisticRegression(class_weight='balanced',
+                                                                  random_state=23)))])

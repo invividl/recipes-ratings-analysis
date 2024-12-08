@@ -148,7 +148,9 @@ To evaluate the model, we use the F1-score, which balances precision and recall,
 
 Our baseline model predicts the rating of a recipe (1-5) using five features: `calories`, `minutes`, `protein (PDV)`, `n_ingredients`, and `meal`. Among these features, four (`calories`, `minutes`, `protein (PDV)`, and `n_ingredients`) are quantitative, while `meal` is nominal. For preprocessing, we applied one-hot encoding to the `meal` column to transform it into binary indicators, while leaving the numerical features unchanged. All steps, including feature transformation and model training, were implemented in a single sklearn pipeline.
 
-The baseline model uses a Logistic Regression classifier wrapped in `OneVsRestClassifier`, with `class_weight='balanced'` to address the imbalance in the dataset, where `rating = 5` dominates. On the test set, the model achieved an accuracy of 22%, with a weighted F1-score of **0.29.** While the model demonstrates some ability to predict the majority class (`rating = 5`), its performance on minority classes is poor, as evidenced by the low macro-average F1-score of 0.11. This indicates that the current model struggles to generalize to unseen data and handle the imbalanced dataset effectively. 
+The baseline model uses a **Logistic Regression** classifier wrapped in `OneVsRestClassifier`, with `class_weight='balanced'` to address the imbalance in the dataset, where `rating = 5` dominates. On the test set, the model achieved an accuracy of 22%, with a weighted F1-score of **0.29.** While the model demonstrates some ability to predict the majority class (`rating = 5`), its performance on minority classes is poor, as evidenced by the low macro-average F1-score of 0.11. This indicates that the current model struggles to generalize to unseen data and handle the imbalanced dataset effectively. 
+
+<iframe src="assets/baseline_model.html" width="800" height="400" frameborder="0"></iframe>
 
 ### Classification Report for Baseline Model
               precision    recall  f1-score   support
@@ -171,6 +173,13 @@ The baseline model uses a Logistic Regression classifier wrapped in `OneVsRestCl
 ></iframe>
 
 ## Final Model
+
+Our final model improves upon the baseline by incorporating feature engineering and a hyperparameter search. We engineered two new features using `PolynomialFeatures` for `calories` and `protein (PDV)` to capture non-linear relationships that may exist between these features and user ratings. Additionally, we applied transformations such as `log1p` and `sqrt` to the `calories` feature using a `FunctionTransformer`, which helps reduce the skewness in its distribution, making it more interpretable. These new features and transformations, combined with `StandardScaler` for the `minutes` column and `OneHotEncoder` for the `meal` column, were integrated into a single pipeline.
+
+The model used for this pipeline was a **Logistic Regression** classifier wrapped in a `OneVsRestClassifier` to handle multiclass classification. To optimize the model's performance, we performed hyperparameter tuning using `GridSearchCV`, testing polynomial degrees (2–4), different transformations (`log1p` and `sqrt`), and regularization strengths (`C`) for the Logistic Regression classifier. The best-performing model used a polynomial degree of 3, a square root transformation for calories, and a C value of 1 for regularization. These parameters struck a balance between capturing complex relationships and preventing overfitting.
+
+In terms of performance, the final model showed marked improvements over the baseline. The baseline model achieved an accuracy of 22% and a weighted F1-score of 0.29, struggling to predict minority classes effectively. In contrast, the final model achieved an accuracy of 35% and a weighted F1-score of 0.43. The macro-average F1-score also improved significantly, indicating better performance across all classes, including minority ones. This improvement is attributed to the additional feature engineering, which allowed the model to better represent the data, and the hyperparameter tuning, which optimized the model for the given task.
+
 
 ### Classification Report for Final Model
 
