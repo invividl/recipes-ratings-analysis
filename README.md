@@ -4,7 +4,7 @@
 
 ## Introduction
 
-As society moves in the direction of physical fitness, understanding how different factors influence the popularity of dishes can uncover how to promote healthier ones. The question we try to answer is how nutrition and effort affect the popularity of recipes. We used the “Recipes and Ratings” dataset, which originally contains 234429 rows after merging the recipes and ratings datasets on recipe ID. The relevant names of the columns are: name, id, minutes, n_steps, n_ingredients, rating, nutrition, and tags. Name describes the name of the recipe, which aren’t all unique, which is why id is important in separating recipes for analysis. Minutes is how long the recipe takes to make, with n_steps and n_ingredients representing the required number of steps and ingredients. Rating is the rating that each individual reviewer left on each recipe, so each recipe has multiple ratings. Nutrition and tag are columns of lists, where nutrition includes the calories, total fat (PDV), sugar (PDV), sodium (PDV), protein (PDV), saturated fat (PDV), carbohydrates (PDV), and tag includes many different shared identifiers such as the meal of the day and other groups.
+As society moves in the direction of physical fitness, understanding how different factors influence the popularity of dishes can uncover how to promote healthier ones. The question we try to answer is how nutrition and effort affect the popularity of recipes. We used the **“Recipes and Ratings”** dataset, which originally contains 234,429 rows after merging the recipes and ratings datasets on recipe ID. The relevant names of the columns are: name, id, minutes, n_steps, n_ingredients, rating, nutrition, and tags. Name describes the name of the recipe, which aren’t all unique, which is why id is important in separating recipes for analysis. Minutes is how long the recipe takes to make, with n_steps and n_ingredients representing the required number of steps and ingredients. Rating is the rating that each individual reviewer left on each recipe, so each recipe has multiple ratings. Nutrition and tag are columns of lists, where nutrition includes the calories, total fat (PDV), sugar (PDV), sodium (PDV), protein (PDV), saturated fat (PDV), carbohydrates (PDV), and tag includes many different shared identifiers such as the meal of the day and other groups.
 
 ### Data Cleaning and Exploratory Data Analysis
 
@@ -103,7 +103,7 @@ This grouped table shows the relationship between the number of ingredients and 
 |               7 |    337.541 |           25.8984 |       48.1734 |        24.5571 |         27.3403 |               32.613  |              10.3042  |
 |              33 |    338.2   |           25      |       18      |        16      |          8      |               12      |              14       |
 |               8 |    343.604 |           26.4764 |       49.6151 |        25.8371 |         28.3988 |               33.6221 |              10.3894  |
-...
+
 |   n_ingredients |   calories |   total fat (PDV) |   sugar (PDV) |   sodium (PDV) |   protein (PDV) |   saturated fat (PDV) |   carbohydrates (PDV) |
 |----------------:|-----------:|------------------:|--------------:|---------------:|----------------:|----------------------:|----------------------:|
 |              25 |    660.912 |           41.4706 |       52      |        70.7059 |         78.7647 |               47.8235 |               21.4118 |
@@ -144,3 +144,7 @@ To evaluate the model, we use the F1-score, which balances precision and recall,
 
 
 ## Final Model
+
+## Conclusion
+
+From our exploration of the Recipe and Reviews dataset, it can be seen that there is a very low correlation between the nutritional value of a food and the ratings it receives on a recipe website. When running our model to predict the ratings from a variety of factors including calories, number of ingredients, protein, our final model was only able to get an accuracy of around [percent] percent. When referring back to the distribution of ratings and its relationship between these features, it is not a surprise that they have a hard time accurately predicting since the original data is so skewed and they had limited correlations. While we were unsuccessful in creating a highly accurate model to predict ratings from nutrition, the data can still be useful in hinting that good and bad nutrition have a similar popularity, which is a good sign for the future of the health and fitness industry. For the next steps of the research, it would be interesting to create predictions from a more evenly distributed dataset of ratings to see if it would make a difference from how we handled the uneven distribution (using weights). Additionally, finding a metric for taste would be interesting to see how that factor might affect ratings more than the nutritional content of the food.
