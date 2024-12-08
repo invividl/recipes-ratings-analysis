@@ -25,7 +25,7 @@ Before cleaning, we performed some analysis of graphing the distributions of a f
 We first investigated the overall distribution of the ratings column that we are trying to predict and noticed that there are an overwhelming majority of fives. This will be important when we consider how our model is being trained, since we might be oversampling fives and that assessing accuracy will be interesting with such little representation from other ratings.
 
 <iframe
-  src="assets/avg-rating-bar.html"
+  src="assets/indiv-rating-bar.html"
   width="800"
   height="600"
   frameborder="0"
@@ -138,9 +138,9 @@ Only the ratings column contained any missing values, and we decided not to impu
 
 ## Framing a Prediction Problem
 
-Our prediction task is a multiclass classification problem, where we aim to predict the rating of a recipe (1-5) based on its characteristics, such as nutritional content, preparation time, and meal type. We chose rating as the response variable because it reflects recipe popularity and aligns with our goal of understanding how factors like nutrition and effort influence user preferences. The ratings are categorical integers, making classification more appropriate than regression, as it ensures predictions align with the actual classes.
+Our prediction task is a multiclass classification problem, where we aim to predict the rating of a recipe (1-5) based on its characteristics, such as nutritional content, preparation time, and meal type. We chose `rating` as the response variable because it reflects recipe popularity and aligns with our goal of understanding how factors like nutrition and effort influence user preferences. The ratings are categorical integers, making classification more appropriate than regression, as it ensures predictions align with the actual classes.
 
-To evaluate the model, we use the F1-score, which balances precision and recall, making it suitable for our imbalanced dataset where rating = 5 dominates. Accuracy is not ideal in our case because it could overrepresent the majority class without reflecting model performance for minority classes. Our features include calories, nutritional data (e.g., calories, protein (PDV)), minutes, and meal type, as they are available at the time of prediction.
+To evaluate the model, we use the F1-score, which balances precision and recall, making it suitable for our imbalanced dataset where `rating = 5` dominates. Accuracy is not ideal in our case because it could overrepresent the majority class without reflecting model performance for minority classes. Our features include nutritional data (e.g., `calories`, `protein (PDV)`), `n_ingredients`, `minutes`, and `meal` type, as they are available at the time of prediction.
 
 ## Baseline Model
 
