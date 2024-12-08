@@ -144,7 +144,29 @@ To evaluate the model, we use the F1-score, which balances precision and recall,
 
 ## Baseline Model
 
+Our baseline model predicts the rating of a recipe (1-5) using five features: `calories`, `minutes`, `protein (PDV)`, `n_ingredients`, and `meal`. Among these features, four (`calories`, `minutes`, `protein (PDV)`, and `n_ingredients`) are quantitative, while `meal` is nominal. For preprocessing, we applied one-hot encoding to the `meal` column to transform it into binary indicators, while leaving the numerical features unchanged. All steps, including feature transformation and model training, were implemented in a single sklearn pipeline.
 
+The baseline model uses a Logistic Regression classifier wrapped in `OneVsRestClassifier`, with `class_weight='balanced'` to address the imbalance in the dataset, where `rating = 5` dominates. On the test set, the model achieved an accuracy of 22%, with a weighted F1-score of **0.29.** While the model demonstrates some ability to predict the majority class (`rating = 5`), its performance on minority classes is poor, as evidenced by the low macro-average F1-score of 0.11. This indicates that the current model struggles to generalize to unseen data and handle the imbalanced dataset effectively. 
+
+### Classification Report for Baseline Model:
+              precision    recall  f1-score   support
+
+         1.0       0.01      0.50      0.03       252
+         2.0       0.00      0.00      0.00       193
+         3.0       0.00      0.00      0.00       560
+         4.0       0.16      0.29      0.21      3193
+         5.0       0.77      0.21      0.33     14500
+
+    accuracy                           0.22     18698
+   macro avg       0.19      0.20      0.11     18698
+weighted avg       0.63      0.22      0.29     18698
+
+<iframe
+  src="assets/base-confusion_matrix.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
 
 ## Final Model
 
