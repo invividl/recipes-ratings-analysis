@@ -4,13 +4,15 @@
 
 ## Introduction
 
-As society moves in the direction of physical fitness, understanding how different factors influence the popularity of dishes can uncover how to promote healthier ones. The question we try to answer is how nutrition and effort affect the popularity of recipes. We used the **“Recipes and Ratings”** dataset, which originally contains 234,429 rows after merging the recipes and ratings datasets on recipe ID. The relevant names of the columns are: name, id, minutes, n_steps, n_ingredients, rating, nutrition, and tags. Name describes the name of the recipe, which aren’t all unique, which is why id is important in separating recipes for analysis. Minutes is how long the recipe takes to make, with n_steps and n_ingredients representing the required number of steps and ingredients. Rating is the rating that each individual reviewer left on each recipe, so each recipe has multiple ratings. Nutrition and tag are columns of lists, where nutrition includes the calories, total fat (PDV), sugar (PDV), sodium (PDV), protein (PDV), saturated fat (PDV), carbohydrates (PDV), and tag includes many different shared identifiers such as the meal of the day and other groups.
+As society moves in the direction of physical fitness, understanding how different factors influence the popularity of dishes can uncover how to promote healthier ones. The question we try to answer is how nutrition and effort affect the popularity of recipes. We used the **“Recipes and Ratings”** dataset, which originally contains 234,429 rows after merging the `recipes` and `interactions` datasets on `recipe_id`. The relevant names of the columns are: `name`, `id`, `minutes`, `n_steps`, `n_ingredients`, `rating`, `nutrition`, and `tags`. `name` describes the name of the recipe, which aren’t all unique, which is why `id` is important in separating recipes for analysis. `minutes` is how long the recipe takes to make, with `n_steps` and `n_ingredients` representing the required number of steps and ingredients. Rating is the rating that each individual reviewer left on each recipe, so each recipe has multiple ratings. `nutrition` and `tags` are columns of lists, where `nutrition` includes the calories, total fat (PDV), sugar (PDV), sodium (PDV), protein (PDV), saturated fat (PDV), carbohydrates (PDV), and `tags` includes many different shared identifiers such as the meal of the day and other groups.
 
 ### Data Cleaning and Exploratory Data Analysis
 
 ### Data Cleaning
 
-Before cleaning, we performed some analysis of graphing the distributions of a few of the important columns, such as ratings, to learn about any outliers and interesting skews. We found that there were some outrageous outliers in calories and minutes due to recipes that took months to distill or recipes for a huge part of people. Because of this, we decided to filter the dataset to only include recipes that took under 10,000 minutes with under 2,000 calories, which we deemed reasonable after looking at the distributions again. Additionally, we expanded nutrition and tags. We turned each element in the nutrition list into its own column and turned tags into a categorical column that only included the type of meal a recipe was (breakfast, lunch, dinner, dessert) in order to one hot encode later. We also decided to drop all rows that had NaN ratings, since when we are trying to predict ratings these will provide no additional information, and the distribution of the NaN ratings matches the distribution of the overall dataset, so no significant skews will result from just dropping them. We also decided to drop all other irrelevant columns for our prediction including id, nutrition, steps, description, ingredients, and review, just to make the table cleaner to look at.
+Before cleaning, we performed some analysis of graphing the distributions of a few of the important columns, such as ratings, to learn about any outliers and interesting skews. We found that there were some outrageous outliers in calories and minutes due to recipes that took months to distill or recipes for a huge part of people. Because of this, we decided to filter the dataset to only include recipes that took under 10,000 minutes with under 2,000 calories, which we deemed reasonable after looking at the distributions again. Additionally, we expanded `nutrition` and `tags`. We turned each element in the nutrition list into its own column and turned tags into a categorical column that only included the type of `meal` a recipe was (breakfast, lunch, dinner, dessert) in order to one hot encode later. 
+
+We filled all ratings of 0 with `np.nan` because a rating of 0 likely represents missing or invalid data rather than an actual user evaluation, as ratings typically range from 1 to 5. We also decided to drop all rows that had NaN ratings, since when we are trying to predict ratings these will provide no additional information, and the distribution of the NaN ratings matches the distribution of the overall dataset, so no significant skews will result from just dropping them. Finally, we decided to drop all other irrelevant columns for our prediction, including `id`, `nutrition`, `steps`, `description`, `ingredients`, and `review`, just to make the table cleaner to look at.
 
 | name                                    | meal      |   n_ingredients |   n_steps |   minutes |   calories |   total fat (PDV) |   sugar (PDV) |   sodium (PDV) |   protein (PDV) |   saturated fat (PDV) |   carbohydrates (PDV) |   rating |   avg_rating |
 |:----------------------------------------|:----------|----------------:|----------:|----------:|-----------:|------------------:|--------------:|---------------:|----------------:|----------------------:|----------------------:|---------:|-------------:|
@@ -22,7 +24,7 @@ Before cleaning, we performed some analysis of graphing the distributions of a f
 
 ### Univariate Analysis
 
-We first investigated the overall distribution of the ratings column that we are trying to predict and noticed that there are an overwhelming majority of fives. This will be important when we consider how our model is being trained, since we might be oversampling fives and that assessing accuracy will be interesting with such little representation from other ratings.
+We first investigated the overall distribution of the `rating` column that we are trying to predict and noticed that there are an overwhelming majority of `5`s. This will be important when we consider how our model is being trained, since we might be oversampling fives and that assessing accuracy will be interesting with such little representation from other ratings.
 
 <iframe
   src="assets/indiv-rating-bar.html"
@@ -31,7 +33,7 @@ We first investigated the overall distribution of the ratings column that we are
   frameborder="0"
 ></iframe>
 
-We also plotted the distribution of meals, and the trend shows that the most common type of recipe is for dinner dishes, followed by dessert, lunch, and breakfast, respectively. The good thing is that there is a good amount of data for all meals, and these are mutually exclusive categories that will hopefully help us better predict ratings, as it factors in a new factor of what time of day the food is being eaten.
+We also plotted the distribution of `meal`, and the trend shows that the most common type of recipe is for dinner dishes, followed by dessert, lunch, and breakfast, respectively. The good thing is that there is a good amount of data for all meals, and these are mutually exclusive categories that will hopefully help us better predict ratings, as it factors in a new factor of what time of day the food is being eaten.
 
 <iframe
   src="assets/meal-bar.html"
@@ -42,7 +44,7 @@ We also plotted the distribution of meals, and the trend shows that the most com
 
 ### Bivariate Analysis
 
-We plotted minutes against the rating to see if there were any interesting insights, as intuition leads us to believe that some people may prefer shorter and easier recipes to longer and harder ones. However, the graphs show us that there is minimal difference between how long the recipes take and the average ratings they end up receiving, which will be interesting to see if this feature plays a good role in predicting in the final model. There is some slight variation, but since fives were such a huge part of the dataset, it might make sense that most averages are high.
+We plotted `minutes` against `rating` to see if there were any interesting insights, as intuition leads us to believe that some people may prefer shorter and easier recipes to longer and harder ones. However, the graphs show us that there is minimal difference between how long the recipes take and the average ratings they end up receiving, which will be interesting to see if this feature plays a good role in predicting in the final model. There is some slight variation, but since fives were such a huge part of the dataset, it might make sense that most averages are high.
 
 <iframe
   src="assets/rating-min-box.html"
@@ -58,7 +60,7 @@ We plotted minutes against the rating to see if there were any interesting insig
   frameborder="0"
 ></iframe>
 
-A similar trend exists in the relationship between calories and average rating, where the distribution looks almost completely evenly distributed. This presents a similar problem to investigate as we try to predict ratings.
+A similar trend exists in the relationship between `calories` and average rating (`avg_rating`), where the distribution looks almost completely evenly distributed. This presents a similar problem to investigate as we try to predict ratings.
 
 <iframe
   src="assets/rating-cal-box.html"
@@ -74,7 +76,7 @@ A similar trend exists in the relationship between calories and average rating, 
   frameborder="0"
 ></iframe>
 
-Finally, we plotted the number of ingredients against the average ratings, with a similar trend as the other two relationships. 
+Finally, we plotted the number of ingredients (`n_ingredients`) against the average ratings (`avg_rating`), with a similar trend as the other two relationships. 
 
 <iframe
   src="assets/rating-cal-box.html"
@@ -92,7 +94,7 @@ Finally, we plotted the number of ingredients against the average ratings, with 
 
 ### Interesting Aggregates
 
-This grouped table shows the relationship between the number of ingredients and the average of the nutrional value of each ingredient. It can be interesting to see that the number of ingredients seems to be positively correlated to calories and many of the other nutritional metrics like fat, sugar, and carbs. However, one that stands out is protein, which follows a more quadratic relationship. This also shows that protein is likely the only nutrition that is linearly independent from calories, which makes sense from general food knowledge since fat, sugar, and carbs directly affect calories while protein is more separate.
+This grouped table shows the relationship between the number of ingredients (`n_ingredients`) and the average of the nutrional value of each ingredient. It can be interesting to see that the number of ingredients seems to be positively correlated to calories and many of the other nutritional metrics like fat, sugar, and carbs. However, one that stands out is protein, which follows a more quadratic relationship. This also shows that protein is likely the only nutrition that is linearly independent from calories, which makes sense from general food knowledge since fat, sugar, and carbs directly affect calories while protein is more separate.
 
 Top 7 rows sorted by calories:
 
@@ -120,7 +122,7 @@ Bottom 7 rows sorted by calories:
 
 ### Imputation Strategies
 
-Only the ratings column contained any missing values, and we decided not to impute the missing values because the graph of the distribution of the average recipe ratings for each missing rating showed the same distribution as the distribution of just the total ratings. This tells us that simply dropping the ratings will not affect the distribution of our dataset, so we can safely do so to avoid any complexities.
+Only the `rating` column contained any missing values, and we decided not to impute the missing values because the graph of the distribution of the average recipe ratings for each missing rating showed the same distribution as the distribution of just the total ratings. This tells us that simply dropping the ratings will not affect the distribution of our dataset, so we can safely do so to avoid any complexities.
 
 <iframe
   src="assets/avg-rating-nan-hist.html"
@@ -148,7 +150,7 @@ Our baseline model predicts the rating of a recipe (1-5) using five features: `c
 
 The baseline model uses a Logistic Regression classifier wrapped in `OneVsRestClassifier`, with `class_weight='balanced'` to address the imbalance in the dataset, where `rating = 5` dominates. On the test set, the model achieved an accuracy of 22%, with a weighted F1-score of **0.29.** While the model demonstrates some ability to predict the majority class (`rating = 5`), its performance on minority classes is poor, as evidenced by the low macro-average F1-score of 0.11. This indicates that the current model struggles to generalize to unseen data and handle the imbalanced dataset effectively. 
 
-### Classification Report for Baseline Model:
+### Classification Report for Baseline Model
               precision    recall  f1-score   support
 
          1.0       0.01      0.50      0.03       252
@@ -170,6 +172,15 @@ The baseline model uses a Logistic Regression classifier wrapped in `OneVsRestCl
 
 ## Final Model
 
+### Classification Report for Final Model
+
+<iframe
+  src="assets/final-confusion_matrix.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
 ## Conclusion
 
-From our exploration of the Recipe and Reviews dataset, it can be seen that there is a very low correlation between the nutritional value of a food and the ratings it receives on a recipe website. When running our model to predict the ratings from a variety of factors including calories, number of ingredients, protein, our final model was only able to get an accuracy of around [percent] percent. When referring back to the distribution of ratings and its relationship between these features, it is not a surprise that they have a hard time accurately predicting since the original data is so skewed and they had limited correlations. While we were unsuccessful in creating a highly accurate model to predict ratings from nutrition, the data can still be useful in hinting that good and bad nutrition have a similar popularity, which is a good sign for the future of the health and fitness industry. For the next steps of the research, it would be interesting to create predictions from a more evenly distributed dataset of ratings to see if it would make a difference from how we handled the uneven distribution (using weights). Additionally, finding a metric for taste would be interesting to see how that factor might affect ratings more than the nutritional content of the food.
+From our exploration of the **Recipe and Ratings** dataset, it can be seen that there is a very low correlation between the nutritional value of a food and the ratings it receives on a recipe website. When running our model to predict the ratings from a variety of factors including calories, number of ingredients, protein, our final model was only able to get an accuracy of around [percent] percent. When referring back to the distribution of ratings and its relationship between these features, it is not a surprise that they have a hard time accurately predicting since the original data is so skewed and they had limited correlations. While we were unsuccessful in creating a highly accurate model to predict ratings from nutrition, the data can still be useful in hinting that good and bad nutrition have a similar popularity, which is a good sign for the future of the health and fitness industry. For the next steps of the research, it would be interesting to create predictions from a more evenly distributed dataset of ratings to see if it would make a difference from how we handled the uneven distribution (using weights). Additionally, finding a metric for taste would be interesting to see how that factor might affect ratings more than the nutritional content of the food.
