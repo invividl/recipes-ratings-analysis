@@ -1,6 +1,6 @@
-# Recipes and Ratings Analysis
+# Taste or Waste?
 
-### In Lorthongpanich, Christopher Shang
+#### Authors: Christopher Shang, In Lorthongpanich
 
 | name                                    |   minutes |   n_steps |   n_ingredients |   rating |   avg_rating |   calories |   total fat (PDV) |   sugar (PDV) |   sodium (PDV) |   protein (PDV) |   saturated fat (PDV) |   carbohydrates (PDV) | meal      |
 |:----------------------------------------|----------:|----------:|----------------:|---------:|-------------:|-----------:|------------------:|--------------:|---------------:|----------------:|----------------------:|----------------------:|:----------|
@@ -14,15 +14,23 @@
 
 As society moves in the direction of physical fitness, understanding how different factors influence the popularity of dishes can uncover how to promote healthier ones. The question we try to answer is how nutrition and effort affect the popularity of recipes. We used the “Recipes and Ratings” dataset, which originally contains 234429 rows after merging the recipes and ratings datasets on recipe ID. The relevant names of the columns are: name, id, minutes, n_steps, n_ingredients, rating, nutrition, and tags. Name describes the name of the recipe, which aren’t all unique, which is why id is important in separating recipes for analysis. Minutes is how long the recipe takes to make, with n_steps and n_ingredients representing the required number of steps and ingredients. Rating is the rating that each individual reviewer left on each recipe, so each recipe has multiple ratings. Nutrition and tag are columns of lists, where nutrition includes the calories, total fat (PDV), sugar (PDV), sodium (PDV), protein (PDV), saturated fat (PDV), carbohydrates (PDV), and tag includes many different shared identifiers such as the meal of the day and other groups.
 
+### Data Cleaning and Exploratory Data Analysis
+
 ### Data Cleaning
 
-Before cleaning, we performed some analysis of graphing the distributions of a few of the important columns, such as ratings, to learn about any outliers and interesting skews. We found that there were some outrageous outliers in calories and minutes due to recipes that took months to distill or recipes for a huge part of people. Because of this, we decided to filter the dataset to only include recipes that took under 10,000 minutes with under 2,000 calories, which we deemed reasonable after looking at the distributions again. Additionally, we expanded nutrition and tags. We turned each element in the nutrition list into its own column and turned tags into a categorical column that only included the type of meal a recipe was (breakfast, lunch, dinner, other) in order to one hot encode later. We also decided to drop all rows that had NaN ratings, since when we are trying to predict ratings these will provide no additional information, and the distribution of the NaN ratings matches the distribution of the overall dataset, so no significant skews will result from just dropping them. We also decided to drop all other irrelevant columns for our prediction including id, nutrition, steps, description, ingredients, and review, just to make the table cleaner to look at.
+Before cleaning, we performed some analysis of graphing the distributions of a few of the important columns, such as ratings, to learn about any outliers and interesting skews. We found that there were some outrageous outliers in calories and minutes due to recipes that took months to distill or recipes for a huge part of people. Because of this, we decided to filter the dataset to only include recipes that took under 10,000 minutes with under 2,000 calories, which we deemed reasonable after looking at the distributions again. Additionally, we expanded nutrition and tags. We turned each element in the nutrition list into its own column and turned tags into a categorical column that only included the type of meal a recipe was (breakfast, lunch, dinner, dessert) in order to one hot encode later. We also decided to drop all rows that had NaN ratings, since when we are trying to predict ratings these will provide no additional information, and the distribution of the NaN ratings matches the distribution of the overall dataset, so no significant skews will result from just dropping them. We also decided to drop all other irrelevant columns for our prediction including id, nutrition, steps, description, ingredients, and review, just to make the table cleaner to look at.
 
-### Data Cleaning and Exploratory Data Analysis
+| name                                    | meal      |   n_ingredients |   n_steps |   minutes |   calories |   total fat (PDV) |   sugar (PDV) |   sodium (PDV) |   protein (PDV) |   saturated fat (PDV) |   carbohydrates (PDV) |   rating |   avg_rating |
+|:----------------------------------------|:----------|----------------:|----------:|----------:|-----------:|------------------:|--------------:|---------------:|----------------:|----------------------:|----------------------:|---------:|-------------:|
+| 1 brownies in the world    best ever    | lunch     |               9 |        10 |        40 |      138.4 |                10 |            50 |              3 |               3 |                    19 |                     6 |        4 |         4    |
+| millionaire pound cake                  | dinner    |               7 |         7 |       120 |      878.3 |                63 |           326 |             13 |              20 |                   123 |                    39 |        5 |         5    |
+| 5 tacos                                 | dinner    |               9 |         5 |        20 |      249.4 |                26 |             4 |              6 |              39 |                    39 |                     0 |        4 |         4    |
+| blepandekager   danish   apple pancakes | breakfast |              10 |        10 |        50 |      358.2 |                30 |            62 |             14 |              19 |                    54 |                    12 |        5 |         5    |
+| bbq spray recipe    it really works     | breakfast |               3 |         5 |         5 |       47.2 |                 0 |             2 |              0 |               0 |                     0 |                     0 |        5 |         4.75 |
 
 ### Univariate Analysis
 
-We first investigated the overall distribution of the ratings column that we are trying to predict and noticed that there are an overwhelming majority of fives. This will be important when we consider how our model is being trained, since we might be oversampling fives.
+We first investigated the overall distribution of the ratings column that we are trying to predict and noticed that there are an overwhelming majority of fives. This will be important when we consider how our model is being trained, since we might be oversampling fives and that assessing accuracy will be interesting with such little representation from other ratings.
 
 <iframe
   src="assets/avg-rating-bar.html"
@@ -30,6 +38,8 @@ We first investigated the overall distribution of the ratings column that we are
   height="600"
   frameborder="0"
 ></iframe>
+
+We also plotted the distribution of meals, and the trend shows that the most common type of recipe is for dinner dishes, followed by dessert, lunch, and breakfast, respectively. The good thing is that there is a good amount of data for all meals, and these are mutually exclusive categories that will hopefully help us better predict ratings, as it factors in a new factor of what time of day the food is being eaten.
 
 <iframe
   src="assets/meal-bar.html"
@@ -40,14 +50,101 @@ We first investigated the overall distribution of the ratings column that we are
 
 ### Bivariate Analysis
 
+We plotted minutes against the rating to see if there were any interesting insights, as intuition leads us to believe that some people may prefer shorter and easier recipes to longer and harder ones. However, the graphs show us that there is minimal difference between how long the recipes take and the average ratings they end up receiving, which will be interesting to see if this feature plays a good role in predicting in the final model. There is some slight variation, but since fives were such a huge part of the dataset, it might make sense that most averages are high.
 
+<iframe
+  src="assets/rating-min-box.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+<iframe
+  src="assets/avg-rating-min-bar.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+A similar trend exists in the relationship between calories and average rating, where the distribution looks almost completely evenly distributed. This presents a similar problem to investigate as we try to predict ratings.
+
+<iframe
+  src="assets/rating-cal-box.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+<iframe
+  src="assets/avg-rating-cal-bar.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+Finally, we plotted the number of ingredients against the average ratings, with a similar trend as the other two relationships. 
+
+<iframe
+  src="assets/rating-cal-box.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+<iframe
+  src="assets/avg-rating-cal-bar.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
 
 ### Interesting Aggregates
+
+This grouped table shows the relationship between the number of ingredients and the nutrional value of each ingredient. It can be interesting to see that the number of ingredients seems to be positively correlated to calories and many of the other nutritional metrics like fat, sugar, and carbs. However, one that stands out is protein, which follows a more quadratic relationship. This also shows that protein is likely the only nutrition that is linearly independent from calories, which makes sense from general food knowledge since fat, sugar, and carbs directly affect calories while protein is more separate.
+
+
 
 ### Imputation Strategies
 
 ## Framing a Prediction Problem
 
+Our prediction task is a multiclass classification problem, where we aim to predict the rating of a recipe (1-5) based on its characteristics, such as nutritional content, preparation time, and meal type. We chose rating as the response variable because it reflects recipe popularity and aligns with our goal of understanding how factors like nutrition and effort influence user preferences. The ratings are categorical integers, making classification more appropriate than regression, as it ensures predictions align with the actual classes.
+
+To evaluate the model, we use the F1-score, which balances precision and recall, making it suitable for our imbalanced dataset where rating = 5 dominates. Accuracy is not ideal in our case because it could overrepresent the majority class without reflecting model performance for minority classes. Our features include calories, nutritional data (e.g., calories, protein (PDV)), minutes, and meal type, as they are available at the time of prediction.
+
+|   n_ingredients |   calories |   total fat (PDV) |   sugar (PDV) |   sodium (PDV) |   protein (PDV) |   saturated fat (PDV) |   carbohydrates (PDV) |
+|----------------:|-----------:|------------------:|--------------:|---------------:|----------------:|----------------------:|----------------------:|
+|               3 |    233.665 |           15.1793 |       58.178  |        18.2704 |         13.6887 |               19.5422 |               8.70273 |
+|               4 |    273.232 |           18.9911 |       61.2475 |        15.9101 |         17.4492 |               25.8134 |               9.67255 |
+|               5 |    295.824 |           22.2068 |       50.082  |        21.3015 |         22.6777 |               28.013  |               9.25705 |
+|               6 |    318.485 |           23.5727 |       52.7395 |        20.5398 |         24.9242 |               30.478  |              10.1535  |
+|               7 |    337.541 |           25.8984 |       48.1734 |        24.5571 |         27.3403 |               32.613  |              10.3042  |
+|              33 |    338.2   |           25      |       18      |        16      |          8      |               12      |              14       |
+|               8 |    343.604 |           26.4764 |       49.6151 |        25.8371 |         28.3988 |               33.6221 |              10.3894  |
+|               2 |    350.764 |           26.462  |       60.6165 |        37.4869 |         32.9607 |               31.9175 |               9.77225 |
+|               1 |    355.835 |           38.6538 |       51      |        24.1154 |         17.7308 |               41.3846 |               7.15385 |
+|               9 |    377.929 |           28.7119 |       49.0739 |        25.8744 |         33.0634 |               34.4901 |              11.3832  |
+|              10 |    385.98  |           29.1058 |       45.3992 |        27.3476 |         35.2858 |               35.6608 |              11.4584  |
+|              12 |    408.119 |           31.1478 |       51.4347 |        27.9031 |         36.54   |               37.7896 |              12.186   |
+|              11 |    417.246 |           31.7937 |       49.0923 |        31.7084 |         39.0322 |               38.9212 |              12.2041  |
+|              13 |    428.044 |           32.4388 |       49.3179 |        30.4846 |         39.2827 |               38.9728 |              12.688   |
+|              14 |    474.109 |           37.3336 |       49.567  |        32.3591 |         44.7764 |               45.9711 |              13.1917  |
+|              15 |    497.395 |           37.535  |       50.4153 |        36.1764 |         49.4372 |               44.8445 |              14.3214  |
+|              24 |    503.035 |           38.1481 |       43.0185 |        33.6296 |         51.2037 |               36.9815 |              13.9815  |
+|              16 |    513.772 |           39.1426 |       52.4833 |        38.2898 |         50.9674 |               47.7989 |              14.6305  |
+|              19 |    540.093 |           42.6407 |       55.5854 |        50.9849 |         48.7538 |               44.103  |              15.7864  |
+|              17 |    542.455 |           44.178  |       63.4301 |        38.8051 |         49.0466 |               54.6239 |              14.9481  |
+|              23 |    548.868 |           40.4495 |       51.4771 |        47.8257 |         48.2844 |               40.422  |              17.8349  |
+|              18 |    568.885 |           44.0665 |       50.4509 |        40.3861 |         55.9019 |               55.4699 |              15.8544  |
+|              21 |    608.141 |           52.6579 |       40.1053 |        41.6053 |         57.3053 |               61.0789 |              15.0579  |
+...
+|              26 |    861.319 |           50.8125 |       28.5208 |        58.5833 |        104.271  |               71.0208 |              29.6042  |
+|              28 |    929.4   |           51.8824 |      139.059  |       654.176  |         95.5294 |               49.8824 |              42.2941  |
+|              29 |    948.44  |           56.2    |      119.9    |        80.9    |         97.8    |               51.2    |              37.3     |
+|              31 |   1397.75  |          151.667  |      345.5    |       181.667  |         37.6667 |               92.5    |              37.5     |
+
 ## Baseline Model
+
+
 
 ## Final Model
