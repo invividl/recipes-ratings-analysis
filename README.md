@@ -92,7 +92,9 @@ Finally, we plotted the number of ingredients against the average ratings, with 
 
 ### Interesting Aggregates
 
-This grouped table shows the relationship between the number of ingredients and the nutrional value of each ingredient. It can be interesting to see that the number of ingredients seems to be positively correlated to calories and many of the other nutritional metrics like fat, sugar, and carbs. However, one that stands out is protein, which follows a more quadratic relationship. This also shows that protein is likely the only nutrition that is linearly independent from calories, which makes sense from general food knowledge since fat, sugar, and carbs directly affect calories while protein is more separate.
+This grouped table shows the relationship between the number of ingredients and the average of the nutrional value of each ingredient. It can be interesting to see that the number of ingredients seems to be positively correlated to calories and many of the other nutritional metrics like fat, sugar, and carbs. However, one that stands out is protein, which follows a more quadratic relationship. This also shows that protein is likely the only nutrition that is linearly independent from calories, which makes sense from general food knowledge since fat, sugar, and carbs directly affect calories while protein is more separate.
+
+Top 7 rows sorted by calories:
 
 |   n_ingredients |   calories |   total fat (PDV) |   sugar (PDV) |   sodium (PDV) |   protein (PDV) |   saturated fat (PDV) |   carbohydrates (PDV) |
 |----------------:|-----------:|------------------:|--------------:|---------------:|----------------:|----------------------:|----------------------:|
@@ -103,6 +105,8 @@ This grouped table shows the relationship between the number of ingredients and 
 |               7 |    337.541 |           25.8984 |       48.1734 |        24.5571 |         27.3403 |               32.613  |              10.3042  |
 |              33 |    338.2   |           25      |       18      |        16      |          8      |               12      |              14       |
 |               8 |    343.604 |           26.4764 |       49.6151 |        25.8371 |         28.3988 |               33.6221 |              10.3894  |
+
+Bottom 7 rows sorted by calories:
 
 |   n_ingredients |   calories |   total fat (PDV) |   sugar (PDV) |   sodium (PDV) |   protein (PDV) |   saturated fat (PDV) |   carbohydrates (PDV) |
 |----------------:|-----------:|------------------:|--------------:|---------------:|----------------:|----------------------:|----------------------:|
@@ -137,7 +141,6 @@ Only the ratings column contained any missing values, and we decided not to impu
 Our prediction task is a multiclass classification problem, where we aim to predict the rating of a recipe (1-5) based on its characteristics, such as nutritional content, preparation time, and meal type. We chose rating as the response variable because it reflects recipe popularity and aligns with our goal of understanding how factors like nutrition and effort influence user preferences. The ratings are categorical integers, making classification more appropriate than regression, as it ensures predictions align with the actual classes.
 
 To evaluate the model, we use the F1-score, which balances precision and recall, making it suitable for our imbalanced dataset where rating = 5 dominates. Accuracy is not ideal in our case because it could overrepresent the majority class without reflecting model performance for minority classes. Our features include calories, nutritional data (e.g., calories, protein (PDV)), minutes, and meal type, as they are available at the time of prediction.
-
 
 ## Baseline Model
 
